@@ -12,85 +12,109 @@
         <header class="bg-white shadow">
             <div class="container mx-auto px-4 py-6 flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-blue-700">Oblong Store</h1>
-                <nav>
+                <nav class="hidden md:flex">
                     <a href="#" class="text-gray-700 hover:text-blue-700 px-3">Beranda</a>
                     <a href="#" class="text-gray-700 hover:text-blue-700 px-3">Produk</a>
                     <a href="#" class="text-gray-700 hover:text-blue-700 px-3">Kontak</a>
                 </nav>
+                
+                <!-- Hamburger menu for mobile -->
+                <button class="md:hidden flex items-center px-3 py-2 border rounded text-blue-700 border-blue-700" id="mobile-menu-btn">
+                    <svg class="fill-current h-4 w-4" viewBox="0 0 20 20">
+                        <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/>
+                    </svg>
+                </button>
             </div>
+            
+            <!-- Mobile nav -->
+            <div class="md:hidden hidden px-4 pb-4" id="mobile-menu">
+                <a href="#" class="block py-2 text-gray-700 hover:text-blue-700">Beranda</a>
+                <a href="#" class="block py-2 text-gray-700 hover:text-blue-700">Produk</a>
+                <a href="#" class="block py-2 text-gray-700 hover:text-blue-700">Kontak</a>
+            </div>
+            <script>
+                // Simple mobile menu toggle
+                document.addEventListener("DOMContentLoaded", function() {
+                    const btn = document.getElementById("mobile-menu-btn");
+                    const menu = document.getElementById("mobile-menu");
+                    btn.addEventListener("click", function() {
+                        menu.classList.toggle("hidden");
+                    });
+                });
+            </script>
         </header>
 
         <!-- Hero Section -->
-        <section class="container mx-auto px-4 py-16 text-center">
-            <h2 class="text-4xl font-extrabold mb-4 text-gray-800">Grosir Kaos & Pakaian Berkualitas</h2>
-            <p class="text-lg text-gray-600 mb-8">Dapatkan harga terbaik untuk kebutuhan usaha, komunitas, dan organisasi Anda.</p>
-            <a href="#" class="bg-blue-700 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-800 transition">Lihat Katalog</a>
+        <section class="container mx-auto px-4 py-12 md:py-16 text-center">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-gray-800">Grosir Kaos & Pakaian Berkualitas</h2>
+            <p class="text-base md:text-lg text-gray-600 mb-8">Dapatkan harga terbaik untuk kebutuhan usaha, komunitas, dan organisasi Anda.</p>
+            <a href="#" class="bg-blue-700 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-800 transition inline-block">Lihat Katalog</a>
         </section>
 
         <!-- Banner Promo / CTA -->
         <section class="container mx-auto px-4">
-            <div class="bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl shadow-lg my-8 p-8 flex flex-col md:flex-row items-center justify-between">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl shadow-lg my-8 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between">
                 <div class="mb-4 md:mb-0">
                     <h4 class="text-2xl md:text-3xl font-bold text-white mb-2">Promo Khusus Bulan Ini!</h4>
-                    <p class="text-white text-lg">Diskon hingga <span class="font-extrabold">30%</span> untuk pembelian partai besar. Buruan sebelum kehabisan!</p>
+                    <p class="text-white text-base md:text-lg">Diskon hingga <span class="font-extrabold">30%</span> untuk pembelian partai besar. Buruan sebelum kehabisan!</p>
                 </div>
-                <a href="#" class="bg-white text-blue-700 font-bold px-6 py-3 rounded-lg shadow hover:bg-blue-100 transition mt-4 md:mt-0">Dapatkan Promonya</a>
+                <a href="#" class="bg-white text-blue-700 font-bold px-6 py-3 rounded-lg shadow hover:bg-blue-100 transition mt-4 md:mt-0 whitespace-nowrap">Dapatkan Promonya</a>
             </div>
         </section>
 
         <!-- Kategori Section -->
-        <section class="container mx-auto px-4 py-8">
+        <section class="container mx-auto px-4 py-8 md:py-12">
             <h3 class="text-2xl font-bold mb-6 text-gray-800 text-center">Kategori Produk</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <a href="#" class="bg-white rounded-xl shadow p-6 flex flex-col items-center hover:bg-blue-50 transition">
-                    <img src="https://source.unsplash.com/80x80/?tshirt,clothes" alt="Kaos" class="mb-4 rounded-lg">
-                    <span class="font-semibold text-gray-700">Kaos Polos</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+                <a href="#" class="bg-white rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 transition">
+                    <img src="https://source.unsplash.com/80x80/?tshirt,clothes" alt="Kaos" class="mb-3 rounded-lg">
+                    <span class="font-semibold text-gray-700 text-sm md:text-base">Kaos Polos</span>
                 </a>
-                <a href="#" class="bg-white rounded-xl shadow p-6 flex flex-col items-center hover:bg-blue-50 transition">
-                    <img src="https://source.unsplash.com/80x80/?hoodie,clothes" alt="Hoodie" class="mb-4 rounded-lg">
-                    <span class="font-semibold text-gray-700">Hoodie</span>
+                <a href="#" class="bg-white rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 transition">
+                    <img src="https://source.unsplash.com/80x80/?hoodie,clothes" alt="Hoodie" class="mb-3 rounded-lg">
+                    <span class="font-semibold text-gray-700 text-sm md:text-base">Hoodie</span>
                 </a>
-                <a href="#" class="bg-white rounded-xl shadow p-6 flex flex-col items-center hover:bg-blue-50 transition">
-                    <img src="https://source.unsplash.com/80x80/?polo,clothes" alt="Polo Shirt" class="mb-4 rounded-lg">
-                    <span class="font-semibold text-gray-700">Polo Shirt</span>
+                <a href="#" class="bg-white rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 transition">
+                    <img src="https://source.unsplash.com/80x80/?polo,clothes" alt="Polo Shirt" class="mb-3 rounded-lg">
+                    <span class="font-semibold text-gray-700 text-sm md:text-base">Polo Shirt</span>
                 </a>
-                <a href="#" class="bg-white rounded-xl shadow p-6 flex flex-col items-center hover:bg-blue-50 transition">
-                    <img src="https://source.unsplash.com/80x80/?sweater,clothes" alt="Sweater" class="mb-4 rounded-lg">
-                    <span class="font-semibold text-gray-700">Sweater</span>
+                <a href="#" class="bg-white rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 transition">
+                    <img src="https://source.unsplash.com/80x80/?sweater,clothes" alt="Sweater" class="mb-3 rounded-lg">
+                    <span class="font-semibold text-gray-700 text-sm md:text-base">Sweater</span>
                 </a>
             </div>
         </section>
 
         <!-- Produk Unggulan Section -->
-        <section class="container mx-auto px-4 py-8">
+        <section class="container mx-auto px-4 py-8 md:py-12">
             <h3 class="text-2xl font-bold mb-6 text-gray-800 text-center">Produk Unggulan</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                 
                 <!-- Produk 1 -->
                 <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-                    <img src="https://source.unsplash.com/300x300/?tshirt,clothes" alt="Kaos Polos" class="mb-4 rounded-lg">
+                    <img src="https://source.unsplash.com/300x300/?tshirt,clothes" alt="Kaos Polos" class="mb-4 rounded-lg w-full max-w-[200px]">
                     <h4 class="text-lg font-semibold mb-2">Kaos Polos</h4>
-                    <p class="text-gray-600 mb-4 text-center">Tersedia berbagai warna & ukuran. Cocok untuk usaha sablon, komunitas, dan event.</p>
+                    <p class="text-gray-600 mb-4 text-center text-sm">Tersedia berbagai warna & ukuran. Cocok untuk usaha sablon, komunitas, dan event.</p>
                     <span class="font-bold text-blue-700 mb-2">Mulai Rp20.000/pcs</span>
-                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Detail</a>
+                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Detail</a>
                 </div>
                 
                 <!-- Produk 2 -->
                 <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-                    <img src="https://source.unsplash.com/300x300/?hoodie,clothes" alt="Hoodie" class="mb-4 rounded-lg">
+                    <img src="https://source.unsplash.com/300x300/?hoodie,clothes" alt="Hoodie" class="mb-4 rounded-lg w-full max-w-[200px]">
                     <h4 class="text-lg font-semibold mb-2">Hoodie</h4>
-                    <p class="text-gray-600 mb-4 text-center">Nyaman dipakai dan stylish. Tersedia untuk pesanan partai besar.</p>
+                    <p class="text-gray-600 mb-4 text-center text-sm">Nyaman dipakai dan stylish. Tersedia untuk pesanan partai besar.</p>
                     <span class="font-bold text-blue-700 mb-2">Mulai Rp75.000/pcs</span>
-                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Detail</a>
+                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Detail</a>
                 </div>
                 
                 <!-- Produk 3 -->
                 <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-                    <img src="https://source.unsplash.com/300x300/?polo,clothes" alt="Polo Shirt" class="mb-4 rounded-lg">
+                    <img src="https://source.unsplash.com/300x300/?polo,clothes" alt="Polo Shirt" class="mb-4 rounded-lg w-full max-w-[200px]">
                     <h4 class="text-lg font-semibold mb-2">Polo Shirt</h4>
-                    <p class="text-gray-600 mb-4 text-center">Pilihan tepat untuk seragam kerja & promosi dengan harga grosir.</p>
+                    <p class="text-gray-600 mb-4 text-center text-sm">Pilihan tepat untuk seragam kerja & promosi dengan harga grosir.</p>
                     <span class="font-bold text-blue-700 mb-2">Mulai Rp40.000/pcs</span>
-                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Detail</a>
+                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Detail</a>
                 </div>
             </div>
         </section>
@@ -98,20 +122,20 @@
         <!-- Testimoni Pelanggan -->
         <section class="container mx-auto px-4 py-12">
             <h3 class="text-2xl font-bold mb-8 text-gray-800 text-center">Testimoni Pelanggan</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                 <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
                     <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Testimoni 1" class="w-16 h-16 rounded-full mb-4">
-                    <p class="text-gray-600 italic mb-4 text-center">"Kualitas kaos sangat bagus, pesanan banyak tetap cepat sampai dan harga bersaing. Recomended buat usaha!"</p>
+                    <p class="text-gray-600 italic mb-4 text-center text-sm">"Kualitas kaos sangat bagus, pesanan banyak tetap cepat sampai dan harga bersaing. Recomended buat usaha!"</p>
                     <span class="font-semibold text-blue-700">Budi, Jakarta</span>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
                     <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Testimoni 2" class="w-16 h-16 rounded-full mb-4">
-                    <p class="text-gray-600 italic mb-4 text-center">"Pelayanan ramah, hoodie dan polo shirt-nya nyaman dipakai. Repeat order terus!"</p>
+                    <p class="text-gray-600 italic mb-4 text-center text-sm">"Pelayanan ramah, hoodie dan polo shirt-nya nyaman dipakai. Repeat order terus!"</p>
                     <span class="font-semibold text-blue-700">Rina, Bandung</span>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
                     <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="Testimoni 3" class="w-16 h-16 rounded-full mb-4">
-                    <p class="text-gray-600 italic mb-4 text-center">"Pemesanan untuk komunitas kami sangat mudah dan cepat. Harga grosirnya sangat membantu."</p>
+                    <p class="text-gray-600 italic mb-4 text-center text-sm">"Pemesanan untuk komunitas kami sangat mudah dan cepat. Harga grosirnya sangat membantu."</p>
                     <span class="font-semibold text-blue-700">Andi, Surabaya</span>
                 </div>
             </div>
@@ -121,11 +145,11 @@
         <section class="container mx-auto px-4 py-12">
             <h3 class="text-2xl font-bold mb-8 text-gray-800 text-center">Dipercaya oleh</h3>
             <div class="flex flex-wrap justify-center items-center gap-8">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Logo_Sample_1.png" alt="Brand 1" class="h-12">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Logo_Sample_2.png" alt="Brand 2" class="h-12">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Logo_Sample_3.png" alt="Brand 3" class="h-12">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Logo_Sample_4.png" alt="Brand 4" class="h-12">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Logo_Sample_5.png" alt="Brand 5" class="h-12">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Logo_Sample_1.png" alt="Brand 1" class="h-8 md:h-12">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Logo_Sample_2.png" alt="Brand 2" class="h-8 md:h-12">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Logo_Sample_3.png" alt="Brand 3" class="h-8 md:h-12">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Logo_Sample_4.png" alt="Brand 4" class="h-8 md:h-12">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Logo_Sample_5.png" alt="Brand 5" class="h-8 md:h-12">
             </div>
         </section>
 
@@ -135,19 +159,19 @@
             <div class="max-w-2xl mx-auto space-y-6">
                 <div class="bg-white rounded-lg shadow p-5">
                     <h4 class="font-semibold text-blue-700 mb-2">Bagaimana cara memesan produk grosir?</h4>
-                    <p class="text-gray-600">Pilih produk yang diinginkan, masukkan ke keranjang, lalu lanjutkan ke halaman checkout untuk melengkapi data dan melakukan pembayaran.</p>
+                    <p class="text-gray-600 text-sm">Pilih produk yang diinginkan, masukkan ke keranjang, lalu lanjutkan ke halaman checkout untuk melengkapi data dan melakukan pembayaran.</p>
                 </div>
                 <div class="bg-white rounded-lg shadow p-5">
                     <h4 class="font-semibold text-blue-700 mb-2">Apakah bisa custom desain kaos?</h4>
-                    <p class="text-gray-600">Tentu! Kami menerima pemesanan custom desain untuk produk kaos, hoodie, dan polo shirt. Silakan hubungi kami untuk detailnya.</p>
+                    <p class="text-gray-600 text-sm">Tentu! Kami menerima pemesanan custom desain untuk produk kaos, hoodie, dan polo shirt. Silakan hubungi kami untuk detailnya.</p>
                 </div>
                 <div class="bg-white rounded-lg shadow p-5">
                     <h4 class="font-semibold text-blue-700 mb-2">Berapa minimal order untuk harga grosir?</h4>
-                    <p class="text-gray-600">Minimal pemesanan untuk mendapatkan harga grosir adalah 24 pcs untuk setiap produk.</p>
+                    <p class="text-gray-600 text-sm">Minimal pemesanan untuk mendapatkan harga grosir adalah 24 pcs untuk setiap produk.</p>
                 </div>
                 <div class="bg-white rounded-lg shadow p-5">
                     <h4 class="font-semibold text-blue-700 mb-2">Apakah ada pengiriman ke seluruh Indonesia?</h4>
-                    <p class="text-gray-600">Ya, kami melayani pengiriman ke seluruh wilayah Indonesia menggunakan ekspedisi terpercaya.</p>
+                    <p class="text-gray-600 text-sm">Ya, kami melayani pengiriman ke seluruh wilayah Indonesia menggunakan ekspedisi terpercaya.</p>
                 </div>
             </div>
         </section>
