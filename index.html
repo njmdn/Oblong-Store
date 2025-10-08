@@ -4,10 +4,21 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Oblong Store</title>
+        <!-- Aktifkan dark mode via class -->
+        <script>
+            tailwind.config = {
+                darkMode: 'class'
+            }
+        </script>
         <!-- CDN Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
         <!-- CDN AOS--Animate On Scroll--CSS -->
         <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+        <style>
+            html, body {
+                transition: background-color 0.5s, color 0.5s;
+            }
+        </style>
     </head>
     <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
 
@@ -35,7 +46,7 @@
             </div>
             
             <!-- Mobile nav -->
-            <div class="md:hidden hidden px-4 pb-4" id="mobile-menu">
+            <div class="md:hidden hidden px-4 pb-4 bg-white dark:bg-gray-800 transition-colors duration-500" id="mobile-menu">
                 <a href="#" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-blue-700 dark:hover:text-blue-400">Beranda</a>
                 <a href="#" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-blue-700 dark:hover:text-blue-400">Produk</a>
                 <a href="#" class="block py-2 text-gray-700 dark:text-gray-200 hover:text-blue-700 dark:hover:text-blue-400">Kontak</a>
@@ -60,8 +71,8 @@
         </section>
 
         <!-- Banner Promo / CTA -->
-        <section class="container mx-auto px-4" data-aos="fade-up">
-            <div class="bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl shadow-lg my-8 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between">
+        <section class="container mx-auto px-4" data-aos="zoom-in">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-400 rounded-xl shadow-lg my-8 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between transition-colors duration-500">
                 <div class="mb-4 md:mb-0">
                     <h4 class="text-2xl md:text-3xl font-bold text-white mb-2">Promo Khusus Bulan Ini!</h4>
                     <p class="text-white text-base md:text-lg">Diskon hingga <span class="font-extrabold">30%</span> untuk pembelian partai besar. Buruan sebelum kehabisan!</p>
@@ -71,7 +82,7 @@
         </section>
 
         <!-- Kategori Section -->
-        <section class="container mx-auto px-4 py-8 md:py-12" data-aos="fade-up">
+        <section class="container mx-auto px-4 py-8 md:py-12" data-aos="fade-right">
             <h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 text-center">Kategori Produk</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
                 <a href="#" class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition">
@@ -94,12 +105,12 @@
         </section>
 
         <!-- Produk Unggulan Section -->
-        <section class="container mx-auto px-4 py-8 md:py-12" data-aos="fade-up">
+        <section class="container mx-auto px-4 py-8 md:py-12" data-aos="fade-left">
             <h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 text-center">Produk Unggulan</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                 
                 <!-- Produk 1 -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center" data-aos="zoom-in-up">
                     <img src="https://source.unsplash.com/300x300/?tshirt,clothes" alt="Kaos Polos" class="mb-4 rounded-lg w-full max-w-[200px]">
                     <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Kaos Polos</h4>
                     <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Tersedia berbagai warna & ukuran. Cocok untuk usaha sablon, komunitas, dan event.</p>
@@ -108,7 +119,7 @@
                 </div>
                 
                 <!-- Produk 2 -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center" data-aos="zoom-in-down">
                     <img src="https://source.unsplash.com/300x300/?hoodie,clothes" alt="Hoodie" class="mb-4 rounded-lg w-full max-w-[200px]">
                     <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Hoodie</h4>
                     <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Nyaman dipakai dan stylish. Tersedia untuk pesanan partai besar.</p>
@@ -117,7 +128,7 @@
                 </div>
                 
                 <!-- Produk 3 -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center" data-aos="zoom-in-up">
                     <img src="https://source.unsplash.com/300x300/?polo,clothes" alt="Polo Shirt" class="mb-4 rounded-lg w-full max-w-[200px]">
                     <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Polo Shirt</h4>
                     <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Pilihan tepat untuk seragam kerja & promosi dengan harga grosir.</p>
@@ -131,17 +142,17 @@
         <section class="container mx-auto px-4 py-12" data-aos="fade-up">
             <h3 class="text-2xl font-bold mb-8 text-gray-800 dark:text-gray-100 text-center">Testimoni Pelanggan</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center" data-aos="fade-right">
                     <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Testimoni 1" class="w-16 h-16 rounded-full mb-4">
                     <p class="text-gray-600 dark:text-gray-300 italic mb-4 text-center text-sm">"Kualitas kaos sangat bagus, pesanan banyak tetap cepat sampai dan harga bersaing. Recomended buat usaha!"</p>
                     <span class="font-semibold text-blue-700 dark:text-blue-400">Budi, Jakarta</span>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center" data-aos="fade-up">
                     <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Testimoni 2" class="w-16 h-16 rounded-full mb-4">
                     <p class="text-gray-600 dark:text-gray-300 italic mb-4 text-center text-sm">"Pelayanan ramah, hoodie dan polo shirt-nya nyaman dipakai. Repeat order terus!"</p>
                     <span class="font-semibold text-blue-700 dark:text-blue-400">Rina, Bandung</span>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center" data-aos="fade-left">
                     <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="Testimoni 3" class="w-16 h-16 rounded-full mb-4">
                     <p class="text-gray-600 dark:text-gray-300 italic mb-4 text-center text-sm">"Pemesanan untuk komunitas kami sangat mudah dan cepat. Harga grosirnya sangat membantu."</p>
                     <span class="font-semibold text-blue-700 dark:text-blue-400">Andi, Surabaya</span>
@@ -150,7 +161,7 @@
         </section>
 
         <!-- Brand Partner / Trusted By Section -->
-        <section class="container mx-auto px-4 py-12" data-aos="fade-up">
+        <section class="container mx-auto px-4 py-12" data-aos="zoom-in-up">
             <h3 class="text-2xl font-bold mb-8 text-gray-800 dark:text-gray-100 text-center">Dipercaya oleh</h3>
             <div class="flex flex-wrap justify-center items-center gap-8">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Logo_Sample_1.png" alt="Brand 1" class="h-8 md:h-12">
@@ -165,19 +176,19 @@
         <section class="container mx-auto px-4 py-12" data-aos="fade-up">
             <h3 class="text-2xl font-bold mb-8 text-gray-800 dark:text-gray-100 text-center">Pertanyaan yang Sering Ditanyakan</h3>
             <div class="max-w-2xl mx-auto space-y-6">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5" data-aos="fade-right">
                     <h4 class="font-semibold text-blue-700 dark:text-blue-400 mb-2">Bagaimana cara memesan produk grosir?</h4>
                     <p class="text-gray-600 dark:text-gray-300 text-sm">Pilih produk yang diinginkan, masukkan ke keranjang, lalu lanjutkan ke halaman checkout untuk melengkapi data dan melakukan pembayaran.</p>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5" data-aos="fade-left">
                     <h4 class="font-semibold text-blue-700 dark:text-blue-400 mb-2">Apakah bisa custom desain kaos?</h4>
                     <p class="text-gray-600 dark:text-gray-300 text-sm">Tentu! Kami menerima pemesanan custom desain untuk produk kaos, hoodie, dan polo shirt. Silakan hubungi kami untuk detailnya.</p>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5" data-aos="fade-right">
                     <h4 class="font-semibold text-blue-700 dark:text-blue-400 mb-2">Berapa minimal order untuk harga grosir?</h4>
                     <p class="text-gray-600 dark:text-gray-300 text-sm">Minimal pemesanan untuk mendapatkan harga grosir adalah 24 pcs untuk setiap produk.</p>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-5" data-aos="fade-left">
                     <h4 class="font-semibold text-blue-700 dark:text-blue-400 mb-2">Apakah ada pengiriman ke seluruh Indonesia?</h4>
                     <p class="text-gray-600 dark:text-gray-300 text-sm">Ya, kami melayani pengiriman ke seluruh wilayah Indonesia menggunakan ekspedisi terpercaya.</p>
                 </div>
@@ -201,31 +212,50 @@
         <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
         <!-- AOS & Dark Mode Script -->
         <script>
-            AOS.init();
+            // Init AOS
+            AOS.init({
+                once: true,
+                duration: 700
+            });
+            
             // Dark mode toggle
             const html = document.documentElement;
             const toggleBtn = document.getElementById('dark-toggle');
             const toggleIcon = document.getElementById('dark-toggle-icon');
-            function setDarkMode(isDark) {
+            
+            function setDarkMode(isDark, updateStorage = true) {
                 if(isDark) {
                     html.classList.add('dark');
                     toggleIcon.textContent = '☀️';
-                    localStorage.setItem('theme', 'dark');
+                    if(updateStorage) localStorage.setItem('theme', 'dark');
                 } else {
                     html.classList.remove('dark');
                     toggleIcon.textContent = '🌙';
-                    localStorage.setItem('theme', 'light');
+                    if(updateStorage) localStorage.setItem('theme', 'light');
                 }
             }
-            // Detect system theme on load
+
+            //On load: use localStorage or system
+            function updateModeBySystem() {
+                if(!localStorage.getItem('theme')) {
+                    setDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches, false);
+                }
+            }
+            
+            // First Load
             if(localStorage.getItem('theme') === 'dark' ||
                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                setDarkMode(true);
+                setDarkMode(true, false);
             } else {
-                setDarkMode(false);
+                setDarkMode(false, false);
             }
+            // Toggle on button click
             toggleBtn.addEventListener('click', () => {
                 setDarkMode(!html.classList.contains('dark'));
+            });
+            // Detect OS theme change
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+               if(!localStorage.getItem('theme')) setDarkMode(e.matches, false); 
             });
         </script>
         
