@@ -1,13 +1,430 @@
 <!DOCTYPE html>
-<html lang="id">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Oblong Store</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <body class="bg-gray-50">
+<html lang="id" class="bg-gray-50 dark:bg-gray-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategori - Oblong Store</title>
+    <!-- Activate class-based dark mode for Tailwind CDN -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                }
+            }
+        }
+    </script>
+    <!-- CDN Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CDN AOS--Animate On Scroll--CSS -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        html, body { transition: background-color .3s, color .3s; }
+        /* Toast */
+        #toast {
+            transition: transform .18s ease, opacity .18s ease;
+        }
+    </style>
+</head>
+    <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen">
 
-        
+        <!-- Header -->
+        <header class="bg-white dark:bg-gray-800 shadow">
+            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-2xl font-bold text-blue-700 dark:text-blue-300">Toko Pakaian Grosir</a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Search (small) -->
+                    <div class="hidden sm:block">
+                        <input id="global-search" type="search" placeholder="Cari produk..." class="px-3 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                    </div>
+
+                    <!-- Dark Toggle -->
+                    <button id="dark-toggle" class="p-2 rounded-md bg-gray-100 dark:bg-gray-700" aria-label="Toggle dark mode">
+                        <span id="dark-toggle-icon">🌙</span>
+                    </button>
+
+                    <!-- Cart preview -->
+                    <a href="cart.html" class="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">Keranjang <span id="cart-count" class="ml-2 bg-white text-blue-600 rounded-full px-2 py-0.5 text-xs">0</span></a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main -->
+        <main class="container mx-auto px-4 py-8">
+            <!-- Breadcrumb -->
+            <nav class="text-sm text-gray-600 dark:text-gray-300 mb-6" aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2">
+                    <li><a href="index.html" class="hover:underline">Beranda</a></li>
+                    <li>/</li>
+                    <li class="font-semibold">Kategori</li>
+                </ol>
+            </nav>
+
+            <!-- Controls: filters, sort, view -->
+            <section class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Sidebar filters -->
+                <aside class="lg:col-span-1 bg-white dark:bg-gray-800 rounded-lg p-4 shadow">
+                    <h4 class="font-semibold mb-3 text-gray-800 dark:text-gray-100">Filter</h4>
+
+                    <!-- Categories -->
+                    <div class="mb-4">
+                        <h5 class="text-sm font-medium mb-2">Kategori</h5>
+                        <div id="category-list" class="space-y-2 text-sm">
+                            <!-- JS will inject checkboxes -->
+                        </div>
+                    </div>
+
+                    <!-- Price range -->
+                    <div class="mb-4">
+                        <h5 class="text-sm font-medium mb-2">Rentang Harga</h5>
+                        <div class="flex gap-2 text-sm">
+                            <input id="price-min" type="number" placeholder="Min" class="w-1/2 px-2 py-1 border rounded bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600" />
+                            <input id="price-max" type="number" placeholder="Max" class="w-1/2 px-2 py-1 border rounded bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600" />
+                        </div>
+                    </div>
+
+                    <!-- Stock only -->
+                    <div class="mb-4">
+                        <label class="inline-flex items-center gap-2 text-sm">
+                            <input id="in-stock-only" type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" />
+                            <span class="text-sm">Tersedia saja</span>
+                        </label>
+                    </div>
+
+                    <!-- Apply / Reset -->
+                    <div class="flex gap-2">
+                        <button id="apply-filters" class="flex-1 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">Terapkan</button>
+                        <button id="reset-filters" class="flex-1 border border-gray-300 dark:border-gray-600 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">Reset</button>
+                    </div>
+                </aside>
+
+                <!-- Products & controls -->
+                <div class="lg:col-span-3">
+                    <!-- Controls top bar -->
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                        <div class="flex items-center gap-3">
+                            <label for="sort-select" class="text-sm">Urutkan:</label>
+                            <select id="sort-select" class="px-3 py-2 rounded border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+                                <option value="recommended">Rekomendasi</option>
+                                <option value="newest">Terbaru</option>
+                                <option value="price-asc">Harga: Rendah ke Tinggi</option>
+                                <option value="price-desc">Harga: Tinggi ke Rendah</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <label class="text-sm">Tampilan:</label>
+                            <button id="grid-view" class="px-2 py-1 rounded border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">Grid</button>
+                            <button id="list-view" class="px-2 py-1 rounded border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">List</button>
+                        </div>
+                    </div>
+
+                    <!-- Search on small screens -->
+                    <div class="block sm:hidden mb-3">
+                        <input id="mobile-search" type="search" placeholder="Cari produk..." class="w-full px-3 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600" />
+                    </div>
+
+                    <!-- Products grid -->
+                    <section id="products-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- JS renders product cards here -->
+                    </section>
+
+                    <!-- Pagination -->
+                    <nav class="mt-6 flex items-center justify-between">
+                        <div class="text-sm text-gray-600 dark:text-gray-300" id="pagination-info"></div>
+                        <div class="flex items-center gap-2">
+                            <button id="prev-page" class="px-3 py-1 rounded border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">Prev</button>
+                            <button id="next-page" class="px-3 py-1 rounded border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">Next</button>
+                        </div>
+                    </nav>
+                </div>
+            </section>
+        </main>
+
+        <!-- Toast -->
+        <div id="toast" class="fixed bottom-6 right-6 hidden bg-gray-900 text-white px-4 py-2 rounded shadow-lg z-50"></div>
+
+        <!-- Footer -->
+        <footer class="bg-white dark:bg-gray-800 mt-12 py-6">
+            <div class="container mx-auto px-4 text-sm text-gray-500 dark:text-gray-300">© 2025 Toko Pakaian Grosir</div>
+        </footer>
+
+        <!-- CDN AOS--Animate On Scroll--JS -->
+        <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+        <script>
+            // --- Dark mode (persistent) ---
+            (function initDarkMode() {
+                const html = document.documentElement;
+                const toggleBtn = document.getElementById('dark-toggle');
+                const icon = document.getElementById('dark-toggle-icon');
+
+                function setMode(isDark, store = true) {
+                    if (isDark) { html.classList.add('dark'); icon.textContent = '☀️'; if (store) localStorage.setItem('theme','dark'); }
+                    else { html.classList.remove('dark'); icon.textContent = '🌙'; if (store) localStorage.setItem('theme','light'); }
+                }
+
+                if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    setMode(true, false);
+                } else {
+                    setMode(false, false);
+                }
+
+                toggleBtn.addEventListener('click', () => {
+                    setMode(!document.documentElement.classList.contains('dark'));
+                });
+            })();
+
+            // --- Mock product data ---
+            const PRODUCTS = [
+                { id: 1, title: "Kaos Polos Putih", category: "Kaos", price: 20000, stock: 120, img: "https://source.unsplash.com/600x600/?tshirt,white", createdAt: "2025-10-01" },
+                { id: 2, title: "Hoodie Hitam", category: "Hoodie", price: 75000, stock: 45, img: "https://source.unsplash.com/600x600/?hoodie,black", createdAt: "2025-09-20" },
+                { id: 3, title: "Polo Shirt Biru", category: "Polo", price: 40000, stock: 30, img: "https://source.unsplash.com/600x600/?polo,blue", createdAt: "2025-08-30" },
+                { id: 4, title: "Sweater Rajut", category: "Sweater", price: 95000, stock: 10, img: "https://source.unsplash.com/600x600/?sweater,knit", createdAt: "2025-10-10" },
+                { id: 5, title: "Kaos Polos Hitam", category: "Kaos", price: 22000, stock: 0, img: "https://source.unsplash.com/600x600/?tshirt,black", createdAt: "2025-09-15" },
+                { id: 6, title: "Hoodie Abu-abu", category: "Hoodie", price: 80000, stock: 21, img: "https://source.unsplash.com/600x600/?hoodie,grey", createdAt: "2025-10-14" },
+                { id: 7, title: "Polo Shirt Putih", category: "Polo", price: 42000, stock: 8, img: "https://source.unsplash.com/600x600/?polo,white", createdAt: "2025-09-25" },
+                { id: 8, title: "Kaos Polos Merah", category: "Kaos", price: 21000, stock: 65, img: "https://source.unsplash.com/600x600/?tshirt,red", createdAt: "2025-08-20" },
+                { id: 9, title: "Sweater Hoodie", category: "Sweater", price: 110000, stock: 5, img: "https://source.unsplash.com/600x600/?sweater,hoodie", createdAt: "2025-10-05" },
+                { id: 10, title: "Kaos Oversize", category: "Kaos", price: 25000, stock: 40, img: "https://source.unsplash.com/600x600/?tshirt,oversize", createdAt: "2025-10-18" },
+                // add more items as needed
+                ];
+
+            // --- State ---
+            let state = {
+                query: '',
+                categories: [],        // selected categories filter
+                priceMin: null,
+                priceMax: null,
+                inStockOnly: false,
+                sort: 'recommended',
+                view: 'grid',
+                page: 1,
+                perPage: 6
+            };
+
+            // --- Utilities ---
+            const $ = sel => document.querySelector(sel);
+            const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+            // --- Render category checkboxes dynamically based on product data ---
+            (function renderCategoryFilters() {
+                const cats = Array.from(new Set(PRODUCTS.map(p => p.category)));
+                const container = document.getElementById('category-list');
+                container.innerHTML = '';
+                cats.forEach(cat => {
+                    const id = `cat-${cat.toLowerCase()}`;
+                    const wrapper = document.createElement('label');
+                    wrapper.className = 'flex items-center gap-2';
+                    wrapper.innerHTML = `
+                    <input type="checkbox" value="${cat}" id="${id}" class="form-checkbox h-4 w-4 text-blue-600" />
+                    <span class="text-sm">${cat}</span>
+                    `;
+                    container.appendChild(wrapper);
+
+                    wrapper.querySelector('input').addEventListener('change', () => {
+                        const checked = Array.from(container.querySelectorAll('input:checked')).map(i => i.value);
+                        state.categories = checked;
+                    });
+                });
+            })();
+
+            // --- Filtering, sorting, pagination ---
+            function filterProducts() {
+                return PRODUCTS.filter(p => {
+                    if (state.query) {
+                        const q = state.query.toLowerCase();
+                        if (!(`${p.title} ${p.category}`.toLowerCase().includes(q))) return false;
+                    }
+                    if (state.categories.length && !state.categories.includes(p.category)) return false;
+                    if (state.inStockOnly && p.stock <= 0) return false;
+                    if (state.priceMin != null && state.priceMin !== '' && p.price < Number(state.priceMin)) return false;
+                    if (state.priceMax != null && state.priceMax !== '' && p.price > Number(state.priceMax)) return false;
+                    return true;
+                });
+            }
+
+            function sortProducts(list) {
+                switch (state.sort) {
+                    case 'newest':
+                        return list.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    case 'price-asc':
+                        return list.sort((a,b) => a.price - b.price);
+                    case 'price-desc':
+                        return list.sort((a,b) => b.price - a.price);
+                    default:
+                        return list; // recommended: original order
+                }
+            }
+
+            function paginate(list) {
+                const start = (state.page - 1) * state.perPage;
+                return list.slice(start, start + state.perPage);
+            }
+
+            // --- Render products ---
+            function renderProducts() {
+                const container = document.getElementById('products-container');
+                const allFiltered = sortProducts(filterProducts());
+                const total = allFiltered.length;
+                const pages = Math.max(1, Math.ceil(total / state.perPage));
+                if (state.page > pages) state.page = pages;
+
+                const pageItems = paginate(allFiltered);
+
+                container.innerHTML = '';
+                pageItems.forEach(p => {
+                    const card = document.createElement('article');
+                    card.className = "bg-white dark:bg-gray-800 rounded-lg p-4 shadow flex flex-col";
+                    card.innerHTML = `
+                    <a href="product.html?id=${p.id}" class="block overflow-hidden rounded-md mb-3">
+                    <img src="${p.img}" alt="${p.title}" class="w-full h-44 object-cover rounded-md">
+                    </a>
+                    <div class="flex-1">
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-100">${p.title}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-300">${p.category}</p>
+                    <div class="mt-3 flex items-center justify-between">
+                    <div>
+                    <div class="text-blue-700 dark:text-blue-400 font-bold">Rp${p.price.toLocaleString()}</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">${p.stock > 0 ? p.stock + ' pcs' : 'Habis'}</div>
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                    <button data-id="${p.id}" class="add-to-cart bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Tambah</button>
+                    <a href="product.html?id=${p.id}" class="text-xs text-gray-600 dark:text-gray-300 hover:underline">Detail</a>
+                    </div>
+                    </div>
+                    </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+                // Pagination info
+                $('#pagination-info').textContent = `Menampilkan ${(total === 0) ? 0 : ((state.page - 1) * state.perPage + 1)}–${Math.min(state.page * state.perPage, total)} dari ${total} produk`;
+
+                // Attach add-to-cart listeners
+                $$('.add-to-cart').forEach(btn => btn.addEventListener('click', e => {
+                    const id = Number(e.currentTarget.dataset.id);
+                    addToCart(id, 1);
+                }));
+            }
+
+            // --- Pagination controls ---
+            document.getElementById('prev-page').addEventListener('click', () => {
+                if (state.page > 1) { state.page--; renderProducts(); }
+            });
+            document.getElementById('next-page').addEventListener('click', () => {
+                const total = filterProducts().length;
+                const pages = Math.max(1, Math.ceil(total / state.perPage));
+                if (state.page < pages) { state.page++; renderProducts(); }
+            });
+
+            // --- Filter controls wiring ---
+            document.getElementById('apply-filters').addEventListener('click', () => {
+                state.priceMin = document.getElementById('price-min').value || null;
+                state.priceMax = document.getElementById('price-max').value || null;
+                state.inStockOnly = document.getElementById('in-stock-only').checked;
+                state.page = 1;
+                renderProducts();
+            });
+
+            document.getElementById('reset-filters').addEventListener('click', () => {
+                // Reset UI
+                document.getElementById('price-min').value = '';
+                document.getElementById('price-max').value = '';
+                document.getElementById('in-stock-only').checked = false;
+                document.getElementById('category-list').querySelectorAll('input').forEach(i => i.checked = false);
+                // Reset state
+                state = {...state, categories: [], priceMin: null, priceMax: null, inStockOnly: false, page: 1};
+                renderProducts();
+            });
+
+            // Update category selections live (also re-render)
+            document.getElementById('category-list').addEventListener('change', () => {
+                state.categories = Array.from(document.querySelectorAll('#category-list input:checked')).map(i => i.value);
+            });
+
+            // Sort select
+            document.getElementById('sort-select').addEventListener('change', (e) => {
+                state.sort = e.target.value;
+                state.page = 1;
+                renderProducts();
+            });
+
+            // View Buttons
+            document.getElementById('grid-view').addEventListener('click', () => {
+                state.view = 'grid';
+                $('#products-container').className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4';
+            });
+            document.getElementById('list-view').addEventListener('click', () => {
+                state.view = 'list';
+                $('#products-container').className = 'flex flex-col gap-4';
+            });
+
+            // Search handlers
+            $('#global-search').addEventListener('input', (e) => {
+                state.query = e.target.value.trim();
+                state.page = 1;
+                renderProducts();
+            });
+            $('#mobile-search').addEventListener('input', (e) => {
+                state.query = e.target.value.trim();
+                state.page = 1;
+                renderProducts();
+            });
+
+            // Mobile small search sync
+            $('#global-search').addEventListener('input', (e) => { if ($('#mobile-search')) $('#mobile-search').value = e.target.value; });
+
+            // --- Simple Cart (localStorage) + toast ---
+            function getCart() {
+                return JSON.parse(localStorage.getItem('cart') || '{}');
+            }
+            function saveCart(cart) {
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+            }
+            function addToCart(id, qty = 1) {
+                const product = PRODUCTS.find(p => p.id === id);
+                if (!product) {
+                    showToast('Produk tidak ditemukan', 'error'); return;
+                }
+                if (product.stock <= 0) {
+                    showToast('Stok habis', 'error'); return;
+                }
+                const cart = getCart();
+                cart[id] = (cart[id] || 0) + qty;
+                saveCart(cart);
+                showToast(`${product.title} ditambahkan ke keranjang`);
+            }
+            function updateCartCount() {
+                const cart = getCart();
+                const totalQty = Object.values(cart).reduce((s, v) => s + v, 0);
+                document.getElementById('cart-count').textContent = totalQty;
+            }
+            updateCartCount();
+
+            function showToast(message, type = 'ok') {
+                const el = document.getElementById('toast');
+                el.textContent = message;
+                el.classList.remove('hidden');
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+                if (type === 'error') {
+                    el.className = 'fixed bottom-6 right-6 bg-red-600 text-white px-4 py-2 rounded shadow-lg z-50';
+                } else {
+                    el.className = 'fixed bottom-6 right-6 bg-gray-900 text-white px-4 py-2 rounded shadow-lg z-50';
+                }
+                clearTimeout(el._timeout);
+                el._timeout = setTimeout(() => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(8px)';
+                    setTimeout(() => el.classList.add('hidden'), 220);
+                }, 2200);
+            }
+
+            // --- Init render ---
+            renderProducts();
+        </script>
     </body>
 </html>
