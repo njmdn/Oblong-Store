@@ -1,13 +1,807 @@
 <!DOCTYPE html>
-<html lang="id">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Oblong Store</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <body class="bg-gray-50">
+<html lang="id" class="bg-gray-50 dark:bg-gray-900">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+  		<title>Katalog Produk — Oblong Store</title>
+		<!-- Activate class-based dark mode for Tailwind CDN -->
+    	<script>
+			tailwind = {
+				config: {
+					darkMode: 'class'
+				}
+			}
+		</script>
+		<!-- CDN Tailwind CSS -->
+    	<script src="https://cdn.tailwindcss.com"></script>
+    	<!-- CDN AOS--Animate On Scroll--CSS -->
+    	<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+		<style>
+			html, body {
+				transition: background-color .25s, color .25s;
+			}
+			/* tiny flip animation for cards when filters change */
+			@keyframes filterFlip {
+				0% {
+					transform: rotateX(10deg) translateY(8px); opacity: 0;
+				}
+				60% {
+					transform: rotateX(-4deg) translateY(-4px); opacity: 1;
+				}
+      			100% {
+					transform: rotateX(0) translateY(0); opacity: 1;
+				}
+			}
+			.animate-filter {
+				animation: filterFlip .45s ease;
+			}
+			/* skeleton loader */
+			.skeleton {
+				background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 37%, rgba(255,255,255,0.06) 63%);
+				background-size: 400% 100%;
+				animation: shimmer 1.2s linear infinite;
+			}
+			@keyframes shimmer {
+				0%{background-position:-400px 0}100%{background-position:400px 0}
+			}
+			/* color swatch */
+			.swatch {
+				width: 1.25rem;
+				height: 1.25rem;
+				border-radius: 9999px;
+				border:2px solid rgba(255,255,255,0.6);
+				box-shadow: 0 0 0 2px rgba(0,0,0,0.04) inset;
+			}
+		</style>
+	</head>
+	<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen">
 
-        
-    </body>
+		<!-- Header -->
+		<header class="bg-white dark:bg-gray-800 shadow">
+			<div class="container mx-auto px-4 py-4 flex items-center justify-between">
+				<div>
+					<a href="index.html" class="text-xl font-bold text-blue-700 dark:text-blue-300">Toko Pakaian Grosir</a>
+					<div class="text-sm text-gray-500 dark:text-gray-300">Katalog Produk</div>
+				</div>
+
+				<div class="flex items-center gap-3">
+					<button id="view-toggle" class="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-sm" aria-pressed="false" title="Toggle grid/list view">
+						<span id="view-icon">🔳</span>
+        			</button>
+					<button id="dark-toggle" class="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-sm" aria-label="Toggle dark mode">🌙</button>
+      			</div>
+    		</div>
+  		</header>
+
+		<main class="container mx-auto px-4 py-8">
+			<div class="grid md:grid-cols-4 gap-6">
+				<!-- Filters (left column) -->
+      			<aside class="md:col-span-1">
+        			<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 space-y-4">
+          				<div class="flex items-start justify-between">
+            				<h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Filter Lanjutan</h2>
+							<button id="save-filters" class="text-xs text-gray-500 dark:text-gray-300 hover:underline">Simpan</button>
+          				</div>
+
+						<div>
+            				<label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Cari produk</label>
+            				<input id="search" type="search" placeholder="Nama, kata kunci..."
+              					class="mt-1 block w-full rounded-md border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm p-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          				</div>
+
+          				<div>
+            				<span class="block text-sm font-medium text-gray-700 dark:text-gray-300">Kategori</span>
+            				<div id="category-filters" class="mt-2 space-y-2 text-sm"></div>
+          				</div>
+
+          				<div>
+            				<span class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ukuran</span>
+            				<div id="size-filters" class="mt-2 flex flex-wrap gap-2">
+              					<!-- sizes rendered by JS -->
+            				</div>
+          				</div>
+
+						<div>
+            				<span class="block text-sm font-medium text-gray-700 dark:text-gray-300">Warna</span>
+            				<div id="color-filters" class="mt-2 flex gap-2 items-center">
+              					<!-- color swatches by JS -->
+							</div>
+          				</div>
+
+          				<div>
+							<span class="block text-sm font-medium text-gray-700 dark:text-gray-300">Harga (Rp)</span>
+            				<div class="flex gap-2 mt-2">
+								<input id="price-min" type="number" min="0" placeholder="Min"
+                					class="w-1/2 rounded-md p-2 text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+								<input id="price-max" type="number" min="0" placeholder="Max"
+                					class="w-1/2 rounded-md p-2 text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+							</div>
+          				</div>
+
+          				<div>
+            				<label for="sort" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Urutkan</label>
+            				<select id="sort" class="mt-1 block w-full rounded-md p-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm">
+              					<option value="pop">Rekomendasi</option>
+								<option value="price-asc">Harga: Terendah</option>
+              					<option value="price-desc">Harga: Tertinggi</option>
+              					<option value="name-asc">Nama A–Z</option>
+              					<option value="name-desc">Nama Z–A</option>
+              					<option value="new">Terbaru</option>
+							</select>
+						</div>
+
+          				<div>
+            				<span class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tags</span>
+            				<div id="tag-filters" class="mt-2 flex flex-wrap gap-2">
+              					<!-- tags by JS -->
+            				</div>
+          				</div>
+
+						<div class="flex items-center justify-between">
+            				<div>
+								<label for="per-page" class="text-sm text-gray-700 dark:text-gray-300">Per halaman</label>
+								<select id="per-page" class="ml-2 rounded-md p-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm">
+									<option value="6">6</option>
+                      				<option value="9" selected>9</option>
+                					<option value="12">12</option>
+              					</select>
+            				</div>
+							<div class="flex gap-2">
+              					<button id="reset-filters" class="text-sm text-blue-700 dark:text-blue-400 hover:underline">Reset</button>
+              					<button id="export-csv" class="text-sm text-gray-600 dark:text-gray-300 hover:underline">Export CSV</button>
+							</div>
+						</div>
+					</div>
+				</aside>
+
+				<!-- Product list (right column) -->
+				<section class="md:col-span-3">
+					<div class="mb-4 flex items-center justify-between">
+						<div>
+							<div class="text-sm text-gray-600 dark:text-gray-300" id="results-count">Menampilkan 0 produk</div>
+							<div class="text-xs text-gray-500 dark:text-gray-400" id="filter-hint">Gunakan filter untuk menemukan produk lebih cepat</div>
+						</div>
+
+						<div class="flex items-center gap-4">
+							<div id="active-chips" class="flex flex-wrap gap-2"></div>
+							<div class="text-sm text-gray-600 dark:text-gray-300">Tampilan: <span id="view-label" class="font-medium">Grid</span></div>
+						</div>
+					</div>
+
+					<div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" aria-live="polite" aria-busy="false">
+						<!-- Produk dirender oleh JS -->
+					</div>
+
+					<!-- Pagination -->
+					<nav class="mt-8 flex items-center justify-center" aria-label="Pagination">
+						<ul id="pagination" class="inline-flex -space-x-px"></ul>
+					</nav>
+				</section>
+			</div>
+		</main>
+
+		<!-- Quick view modal -->
+		<div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+			<div class="absolute inset-0 bg-black/40" data-close="true" aria-hidden="true"></div>
+			<div role="dialog" aria-modal="true" aria-labelledby="modal-title" class="relative max-w-3xl w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+				<div class="flex items-start justify-between p-4 border-b border-gray-100 dark:border-gray-700">
+					<h3 id="modal-title" class="text-lg font-semibold text-gray-800 dark:text-gray-100">Preview Produk</h3>
+					<button id="modal-close" class="text-gray-600 dark:text-gray-300">✕</button>
+				</div>
+				<div id="modal-body" class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+					<!-- populated dynamically -->
+				</div>
+			</div>
+		</div>
+
+		<footer class="bg-white dark:bg-gray-800 mt-12 py-6">
+			<div class="container mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-300">
+				&copy; 2025 Toko Pakaian Grosir
+			</div>
+		</footer>
+
+  		<!-- CDN AOS--Animate On Scroll JS -->
+        <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+		<script>
+        /***********************
+        Sample product data (extended)
+        ***********************/
+        const PRODUCTS = [
+            {id:1, title:"Kaos Polos Lengan Pendek - Putih", category:"Kaos", price:20000, img:"https://source.unsplash.com/420x420/?tshirt,white", sizes:["S","M","L","XL"], colors:["white"], tags:["basic","best-seller"], created_at:"2025-01-10"},
+            {id:2, title:"Hoodie Fleece - Hitam", category:"Hoodie", price:75000, img:"https://source.unsplash.com/420x420/?hoodie,black", sizes:["M","L","XL"], colors:["black"], tags:["winter","premium"], created_at:"2025-02-20"},
+            {id:3, title:"Polo Shirt Cotton - Biru", category:"Polo", price:40000, img:"https://source.unsplash.com/420x420/?polo,blue", sizes:["S","M","L"], colors:["blue"], tags:["casual"], created_at:"2025-03-05"},
+            {id:4, title:"Sweater Rajut - Abu", category:"Sweater", price:60000, img:"https://source.unsplash.com/420x420/?sweater,gray", sizes:["M","L"], colors:["gray"], tags:["cozy"], created_at:"2025-01-30"},
+            {id:5, title:"Kaos Polos Lengan Panjang - Merah", category:"Kaos", price:25000, img:"https://source.unsplash.com/420x420/?tshirt,red", sizes:["S","M","L"], colors:["red"], tags:["basic"], created_at:"2025-04-01"},
+            {id:6, title:"Hoodie Zipper - Navy", category:"Hoodie", price:85000, img:"https://source.unsplash.com/420x420/?hoodie,navy", sizes:["L","XL"], colors:["navy"], tags:["sport"], created_at:"2025-03-10"},
+            {id:7, title:"Kaos Anak - Kuning", category:"Kaos", price:18000, img:"https://source.unsplash.com/420x420/?tshirt,kid", sizes:["XS","S"], colors:["yellow"], tags:["kids"], created_at:"2025-02-14"},
+            {id:8, title:"Polo Slimfit - Hitam", category:"Polo", price:45000, img:"https://source.unsplash.com/420x420/?polo,black", sizes:["M","L"], colors:["black"], tags:["slim"], created_at:"2025-04-10"},
+            {id:9, title:"Sweater Hoodie - Merah Marun", category:"Sweater", price:70000, img:"https://source.unsplash.com/420x420/?sweater,maroon", sizes:["M","L","XL"], colors:["maroon"], tags:["cozy"], created_at:"2025-01-20"},
+            {id:10, title:"Kaos Polo Premium - Putih", category:"Polo", price:55000, img:"https://source.unsplash.com/420x420/?polo,white", sizes:["M","L","XL"], colors:["white"], tags:["premium"], created_at:"2025-05-01"},
+            {id:11, title:"Hoodie Oversized - Abu", category:"Hoodie", price:90000, img:"https://source.unsplash.com/420x420/?hoodie,fashion", sizes:["L","XL","XXL"], colors:["gray"], tags:["trendy"], created_at:"2025-05-05"},
+            {id:12, title:"Kaos Oversized - Hitam", category:"Kaos", price:30000, img:"https://source.unsplash.com/420x420/?tshirt,fashion", sizes:["M","L","XL"], colors:["black"], tags:["trendy"], created_at:"2025-05-10"},
+            {id:13, title:"Sweater Zip - Biru", category:"Sweater", price:65000, img:"https://source.unsplash.com/420x420/?sweater,blue", sizes:["M","L"], colors:["blue"], tags:["classic"], created_at:"2025-03-30"},
+            {id:14, title:"Kaos Polos V-neck - Hijau", category:"Kaos", price:22000, img:"https://source.unsplash.com/420x420/?tshirt,green", sizes:["S","M","L"], colors:["green"], tags:["basic"], created_at:"2025-02-01"},
+            {id:15, title:"Polo Casual - Krem", category:"Polo", price:42000, img:"https://source.unsplash.com/420x420/?polo,casual", sizes:["M","L"], colors:["cream"], tags:["casual"], created_at:"2025-04-20"},
+            {id:16, title:"Hoodie Printed - Putih", category:"Hoodie", price:78000, img:"https://source.unsplash.com/420x420/?hoodie,print", sizes:["M","L"], colors:["white"], tags:["print"], created_at:"2025-05-12"},
+            {id:17, title:"Kaos Sport - Orange", category:"Kaos", price:21000, img:"https://source.unsplash.com/420x420/?tshirt,sport", sizes:["S","M","L"], colors:["orange"], tags:["sport"], created_at:"2025-03-12"},
+            {id:18, title:"Polo Basic - Merah", category:"Polo", price:38000, img:"https://source.unsplash.com/420x420/?polo,red", sizes:["M","L"], colors:["red"], tags:["basic"], created_at:"2025-02-22"},
+            {id:19, title:"Sweater Classic - Hitam", category:"Sweater", price:68000, img:"https://source.unsplash.com/420x420/?sweater,black", sizes:["M","L","XL"], colors:["black"], tags:["classic"], created_at:"2025-01-08"},
+            {id:20, title:"Kaos Katun Premium - Navy", category:"Kaos", price:27000, img:"https://source.unsplash.com/420x420/?tshirt,navy", sizes:["M","L"], colors:["navy"], tags:["premium"], created_at:"2025-04-08"},
+            {id:21, title:"Hoodie Heavy - Olive", category:"Hoodie", price:82000, img:"https://source.unsplash.com/420x420/?hoodie,olive", sizes:["L","XL"], colors:["olive"], tags:["heavy"], created_at:"2025-04-25"},
+            {id:22, title:"Kaos Raglan - Putih", category:"Kaos", price:24000, img:"https://source.unsplash.com/420x420/?tshirt,raglan", sizes:["S","M","L"], colors:["white"], tags:["sport"], created_at:"2025-03-02"},
+            {id:23, title:"Polo Sport - Hitam", category:"Polo", price:47000, img:"https://source.unsplash.com/420x420/?polo,sport", sizes:["M","L"], colors:["black"], tags:["sport"], created_at:"2025-05-02"},
+            {id:24, title:"Sweater Retro - Cream", category:"Sweater", price:63000, img:"https://source.unsplash.com/420x420/?sweater,retro", sizes:["M","L"], colors:["cream"], tags:["retro"], created_at:"2025-02-11"}
+        ];
+
+        /***********************
+        State
+        ***********************/
+        let state = {
+            query: '',
+            categories: new Set(),
+            sizes: new Set(),
+            colors: new Set(),
+            tags: new Set(),
+            priceMin: null,
+            priceMax: null,
+            sort: 'pop',
+            perPage: 9,
+            currentPage: 1,
+            products: PRODUCTS.slice(),
+            view: 'grid',
+            isLoading: false
+        };
+
+        /***********************
+        Helpers
+        ***********************/
+        const $ = (q, el = document) => el.querySelector(q);
+        const $$ = (q, el = document) => Array.from(el.querySelectorAll(q));
+
+        function formatPrice(n) {
+            return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return String(text).replace(/[&<>"']/g, m => map[m]);
+        }
+
+        /***********************
+        UI Init
+        ***********************/
+        function initFacets() {
+            // categories
+            const categories = Array.from(new Set(PRODUCTS.map(p => p.category))).sort();
+            const ctn = document.getElementById('category-filters');
+            categories.forEach(cat => {
+                const id = `cat-${cat.toLowerCase()}`;
+                const wrapper = document.createElement('div');
+                wrapper.className = "flex items-center gap-2";
+                wrapper.innerHTML = `
+                    <input type="checkbox" id="${id}" data-cat="${cat}" class="h-4 w-4 rounded border-gray-300 dark:border-gray-600" />
+                    <label for="${id}" class="text-sm text-gray-700 dark:text-gray-300">${cat}</label>
+                    `;
+                    ctn.appendChild(wrapper);
+            });
+
+            // sizes
+            const sizes = Array.from(new Set(PRODUCTS.flatMap(p=>p.sizes))).sort((a,b)=>a.localeCompare(b, undefined, {numeric:true}));
+            const sct = document.getElementById('size-filters');
+            sizes.forEach(sz => {
+                const btn = document.createElement('button');
+                btn.className = 'text-sm px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900';
+                btn.type = 'button';
+                btn.dataset.size = sz;
+                btn.textContent = sz;
+                sct.appendChild(btn);
+            });
+
+            // colors (show swatches)
+            const colors = Array.from(new Set(PRODUCTS.flatMap(p=>p.colors)));
+            const colorCt = document.getElementById('color-filters');
+            colors.forEach(col => {
+                const btn = document.createElement('button');
+                btn.type='button';
+                btn.className = 'swatch ring-1 ring-gray-200 dark:ring-gray-700';
+                btn.dataset.color = col;
+                btn.title = col;
+                btn.setAttribute('aria-label', col);
+                // inline style for swatch color (fallbacks)
+                btn.style.backgroundColor = colorToCss(col);
+                colorCt.appendChild(btn);
+            });
+
+            // tags
+            const tags = Array.from(new Set(PRODUCTS.flatMap(p=>p.tags))).sort();
+            const tagCt = document.getElementById('tag-filters');
+            tags.forEach(t => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200';
+                btn.dataset.tag = t;
+                btn.textContent = t;
+                tagCt.appendChild(btn);
+            });
+        }
+
+        function colorToCss(name) {
+            // mapping of common names to colors (basic)
+            const map = {
+                white: '#ffffff', black:'#000000', gray:'#9CA3AF', blue:'#3B82F6', navy:'#1E3A8A',
+                red:'#EF4444', maroon:'#7F1D1D', green:'#10B981', cream:'#F5F5DC', yellow:'#F59E0B',
+                orange:'#FB923C', olive:'#6B8E23'
+            };
+            return map[name.toLowerCase()] || name;
+        }
+
+        /***********************
+        Filtering & Rendering
+        ***********************/
+       function applyFilters(simulateLoading = true) {
+        // simulate short loading for UX
+        if (simulateLoading) setLoading(true);
+
+        // small debounce: allow skeleton to show
+        setTimeout(() => {
+            let list = PRODUCTS.slice();
+
+            // search
+            if (state.query) {
+                const q = state.query.toLowerCase();
+                list = list.filter(p => (p.title + ' ' + p.category + ' ' + p.tags.join(' ')).toLowerCase().includes(q));
+            }
+
+            // categories
+            if (state.categories.size > 0) list = list.filter(p => state.categories.has(p.category));
+
+            // sizes
+            if (state.sizes.size > 0) list = list.filter(p => p.sizes.some(s => state.sizes.has(s)));
+
+            // colors
+            if (state.colors.size > 0) list = list.filter(p => p.colors.some(c => state.colors.has(c)));
+
+            // tags
+            if (state.tags.size > 0) list = list.filter(p => p.tags.some(t => state.tags.has(t)));
+
+            // price
+            if (state.priceMin != null) list = list.filter(p => p.price >= Number(state.priceMin));
+            if (state.priceMax != null) list = list.filter(p => p.price <= Number(state.priceMax));
+
+            // sort
+            switch (state.sort) {
+                case 'price-asc': list.sort((a,b)=>a.price-b.price); break;
+                case 'price-desc': list.sort((a,b)=>b.price-a.price); break;
+                case 'name-asc': list.sort((a,b)=>a.title.localeCompare(b.title)); break;
+                case 'name-desc': list.sort((a,b)=>b.title.localeCompare(a.title)); break;
+                case 'new': list.sort((a,b)=> new Date(b.created_at) - new Date(a.created_at)); break;
+                default: break;
+            }
+
+            state.products = list;
+            const maxPage = Math.max(1, Math.ceil(state.products.length / state.perPage));
+            if (state.currentPage > maxPage) state.currentPage = maxPage;
+
+            render();
+
+            // stop loading UX
+            setLoading(false);
+        }, simulateLoading ? 320 : 0);
+    }
+
+    function setLoading(flag) {
+        state.isLoading = flag;
+        const grid = document.getElementById('product-grid');
+        grid.setAttribute('aria-busy', flag ? 'true' : 'false');
+
+        if (flag) {
+            // show skeleton cards equal to perPage
+            grid.innerHTML = '';
+            for (let i=0;i<state.perPage;i++) {
+                const s = document.createElement('div');
+                s.className = 'bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col animate-pulse';
+                s.innerHTML = `
+                    <div class="w-full h-44 bg-gray-200 dark:bg-gray-700 rounded-md mb-4 skeleton"></div>
+                    <div class="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded mb-2 skeleton"></div>
+                    <div class="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded mb-4 skeleton"></div>
+                    <div class="mt-auto h-8 w-full bg-gray-200 dark:bg-gray-700 rounded skeleton"></div>
+                `;      
+                grid.appendChild(s);
+            }
+            return;
+        }
+    }
+
+    function render() {
+        const grid = document.getElementById('product-grid');
+        grid.innerHTML = '';
+
+        const start = (state.currentPage - 1) * state.perPage;
+        const end = start + state.perPage;
+        const pageItems = state.products.slice(start, end);
+
+        if (pageItems.length === 0) {
+            grid.innerHTML = `<div class="col-span-full bg-white dark:bg-gray-800 rounded-lg p-6 text-center text-gray-600 dark:text-gray-300">Tidak ada produk yang cocok.</div>`;
+        } else {
+            pageItems.forEach(product => {
+                const card = document.createElement('article');
+                card.className = `bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col ${'animate-filter'}`;
+                card.setAttribute('data-aos','zoom-in');
+                card.innerHTML = `
+                    <div class="relative">
+                        <img loading="lazy" src="${product.img}" alt="${escapeHtml(product.title)}" class="w-full h-48 object-cover rounded-md mb-4">
+                        <div class="absolute top-2 right-2 flex gap-2">
+                            <button class="quick-view bg-white/90 dark:bg-gray-900/80 text-xs px-2 py-1 rounded-md shadow" data-id="${product.id}">Quick</button>
+                            <button class="badge-favorite bg-white/90 dark:bg-gray-900/80 text-xs px-2 py-1 rounded-md shadow" data-id="${product.id}" aria-pressed="false" title="Tambah ke favorit">♡</button>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-sm mb-1">${escapeHtml(product.title)}</h3>
+                    <div class="text-xs text-gray-500 dark:text-gray-300 mb-2">${escapeHtml(product.category)} • ${product.sizes.join(', ')}</div>
+                    <div class="mt-auto flex items-center justify-between">
+                        <div class="font-bold text-blue-700 dark:text-blue-400">Rp ${formatPrice(product.price)}</div>
+                        <div class="flex items-center gap-2">
+                            ${product.tags.map(t=>`<span class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-700">${escapeHtml(t)}</span>`).join(' ')}
+                            <button class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded buy-btn" data-id="${product.id}">Beli</button>
+                        </div>
+                    </div>
+                `;
+                // set layout list vs grid
+                if (state.view === 'list') {
+                    card.classList.add('md:flex-row','md:items-center');
+                    card.querySelector('img').classList.replace('mb-4','mb-0');
+                    card.querySelector('img').style.width = '220px';
+                    card.querySelector('img').style.height = '160px';
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        $('#results-count').textContent = `Menampilkan ${state.products.length} produk`;
+        updateActiveChips();
+        renderPagination();
+        AOS.refresh(); // refresh animations
+    }
+
+    /***********************
+    Pagination
+    ***********************/
+    function renderPagination() {
+        const el = document.getElementById('pagination');
+        el.innerHTML = '';
+
+        const total = state.products.length;
+        const pages = Math.max(1, Math.ceil(total / state.perPage));
+        const current = state.currentPage;
+
+        function pageButton(label, page, isActive=false) {
+            const li = document.createElement('li');
+            li.innerHTML = `<button ${isActive ? 'aria-current="page"' : ''} class="px-3 py-1 m-0.5 rounded-md ${isActive ? 'bg-blue-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border'}">${label}</button>`;
+            li.firstElementChild.addEventListener('click', () => {
+                state.currentPage = page;
+                render();
+                window.scrollTo({ top: 220, behavior: 'smooth' });
+            });
+            return li;
+        }
+
+        // Prev
+        const prev = document.createElement('li');
+        prev.innerHTML = `<button class="px-3 py-1 m-0.5 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border">‹</button>`;
+        prev.firstElementChild.disabled = current === 1;
+        prev.firstElementChild.addEventListener('click', ()=>{ if(current > 1){ state.currentPage--; render(); }});
+        el.appendChild(prev);
+
+        // window
+        let startPage = Math.max(1, current - 3);
+        let endPage = Math.min(pages, startPage + 6);
+        if (endPage - startPage < 6) startPage = Math.max(1, endPage - 6);
+        for (let p = startPage; p <= endPage; p++) {
+            el.appendChild(pageButton(p, p, p === current));
+        }
+
+        // Next
+        const next = document.createElement('li');
+        next.innerHTML = `<button class="px-3 py-1 m-0.5 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border">›</button>`;
+        next.firstElementChild.disabled = current === pages;
+        next.firstElementChild.addEventListener('click', ()=>{ if(current < pages){ state.currentPage++; render(); }});
+        el.appendChild(next);
+    }
+
+    /***********************
+    Active chips UI
+    ***********************/
+    function updateActiveChips() {
+        const ct = document.getElementById('active-chips');
+        ct.innerHTML = '';
+        const addChip = (label, key, value) => {
+            const btn = document.createElement('button');
+            btn.className = 'text-xs px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-200 flex items-center gap-2';
+            btn.innerHTML = `${label} <span class="text-gray-400 ml-1">✕</span>`;
+            btn.title = `Hapus filter ${label}`;
+            btn.addEventListener('click', () => {
+                // remove based on key
+                if (key === 'category') { state.categories.delete(value); $(`#cat-${value.toLowerCase()}`) && ($(`#cat-${value.toLowerCase()}`).checked = false); }
+                if (key === 'size') { state.sizes.delete(value); $$('#size-filters button').find && $$('#size-filters button').forEach(b=>{ if(b.dataset.size===value) b.classList.remove('bg-blue-600','text-white'); }); }
+                if (key === 'color') { state.colors.delete(value); $$('#color-filters button').forEach(b=>{ if(b.dataset.color===value) b.classList.remove('ring-2','ring-blue-500'); }); }
+                if (key === 'tag') { state.tags.delete(value); $$('#tag-filters button').forEach(b=>{ if(b.dataset.tag===value) b.classList.remove('bg-blue-600','text-white'); }); }
+                applyFilters();
+            });
+            ct.appendChild(btn);
+        };
+
+        state.categories.forEach(v => addChip(v, 'category', v));
+        state.sizes.forEach(v => addChip(v, 'size', v));
+        state.colors.forEach(v => addChip(v, 'color', v));
+        state.tags.forEach(v => addChip(v, 'tag', v));
+        if (state.priceMin) addChip(`>= Rp ${formatPrice(state.priceMin)}`, 'priceMin', state.priceMin);
+        if (state.priceMax) addChip(`<= Rp ${formatPrice(state.priceMax)}`, 'priceMax', state.priceMax);
+        if (state.query) addChip(`"${state.query}"`, 'query', state.query);
+    }
+
+    /***********************
+    Events binding
+    ***********************/
+    function bindEvents() {
+        // search debounce
+        let searchTimer = null;
+        $('#search').addEventListener('input', (e) => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                state.query = e.target.value.trim();
+                state.currentPage = 1;
+                applyFilters();
+            }, 300);
+        });
+
+        // category checkboxes
+        document.getElementById('category-filters').addEventListener('change', (e) => {
+            if (e.target.matches('input[type="checkbox"]')) {
+                const cat = e.target.dataset.cat;
+                if (e.target.checked) state.categories.add(cat);
+                else state.categories.delete(cat);
+                state.currentPage = 1;
+                applyFilters();
+            }
+        });
+
+        // size toggles (delegation)
+        document.getElementById('size-filters').addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn || !btn.dataset.size) return;
+            const s = btn.dataset.size;
+            if (state.sizes.has(s)) {
+                state.sizes.delete(s);
+                btn.classList.remove('bg-blue-600','text-white');
+            } else {
+                state.sizes.add(s);
+                btn.classList.add('bg-blue-600','text-white');
+            }
+            state.currentPage = 1;
+            applyFilters();
+        });
+
+        // color swatches
+        document.getElementById('color-filters').addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn || !btn.dataset.color) return;
+            const c = btn.dataset.color;
+            if (state.colors.has(c)) {
+                state.colors.delete(c);
+                btn.classList.remove('ring-2','ring-blue-500');
+            } else {
+                state.colors.add(c);
+                btn.classList.add('ring-2','ring-blue-500');
+            }
+            state.currentPage = 1;
+            applyFilters();
+        });
+
+        // tag toggles
+        document.getElementById('tag-filters').addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn || !btn.dataset.tag) return;
+            const t = btn.dataset.tag;
+            if (state.tags.has(t)) {
+                state.tags.delete(t);
+                btn.classList.remove('bg-blue-600','text-white');
+            } else {
+                state.tags.add(t);
+                btn.classList.add('bg-blue-600','text-white');
+            }
+            state.currentPage = 1;
+            applyFilters();
+        });
+
+        // price
+        $('#price-min').addEventListener('change', (e) => { state.priceMin = e.target.value ? Number(e.target.value) : null; state.currentPage = 1; applyFilters(); });
+        $('#price-max').addEventListener('change', (e) => { state.priceMax = e.target.value ? Number(e.target.value) : null; state.currentPage = 1; applyFilters(); });
+
+        // sort
+        $('#sort').addEventListener('change', (e) => { state.sort = e.target.value; state.currentPage = 1; applyFilters(); });
+
+        // per page
+        $('#per-page').addEventListener('change', (e) => { state.perPage = Number(e.target.value); state.currentPage = 1; applyFilters(); });
+
+        // reset
+        $('#reset-filters').addEventListener('click', () => {
+        $('#search').value = '';
+        $('#price-min').value = '';
+        $('#price-max').value = '';
+        $('#sort').value = 'pop';
+        $('#per-page').value = '9';
+        state = { ...state, query:'', categories:new Set(), sizes:new Set(), colors:new Set(), tags:new Set(), priceMin:null, priceMax:null, sort:'pop', perPage:9, currentPage:1 };
+        // reset UI toggles
+        $$('#category-filters input[type="checkbox"]').forEach(cb => cb.checked = false);
+        $$('#size-filters button').forEach(b => b.classList.remove('bg-blue-600','text-white'));
+        $$('#color-filters button').forEach(b => b.classList.remove('ring-2','ring-blue-500'));
+        $$('#tag-filters button').forEach(b => b.classList.remove('bg-blue-600','text-white'));
+        applyFilters();
+        });
+
+        // quick view modal (delegation)
+        document.getElementById('product-grid').addEventListener('click', (e) => {
+            if (e.target.matches('.quick-view')) {
+                const id = Number(e.target.dataset.id);
+                openModal(id);
+            }
+            if (e.target.matches('.buy-btn')) {
+                const id = Number(e.target.dataset.id);
+                alert('Tambah ke keranjang: ID '+id+' (demo)');
+            }
+            if (e.target.matches('.badge-favorite')) {
+                const btn = e.target;
+                const pressed = btn.getAttribute('aria-pressed') === 'true';
+                btn.setAttribute('aria-pressed', (!pressed).toString());
+                btn.textContent = pressed ? '♡' : '♥';
+            }
+        });
+
+        // modal events
+        document.getElementById('modal-close').addEventListener('click', closeModal);
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.dataset.close === "true") closeModal();
+        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+        // view toggle
+        document.getElementById('view-toggle').addEventListener('click', (e) => {
+            state.view = state.view === 'grid' ? 'list' : 'grid';
+            $('#view-icon').textContent = state.view === 'grid' ? '🔳' : '📋';
+            $('#view-toggle').setAttribute('aria-pressed', state.view==='list');
+            $('#view-label').textContent = state.view === 'grid' ? 'Grid' : 'List';
+            render();
+        });
+
+        // dark mode
+        document.getElementById('dark-toggle').addEventListener('click', () => {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark'); localStorage.setItem('theme','light'); $('#dark-toggle').textContent = '🌙';
+            } else { html.classList.add('dark'); localStorage.setItem('theme','dark'); $('#dark-toggle').textContent = '☀️'; }
+        });
+
+        // save filters
+        document.getElementById('save-filters').addEventListener('click', () => {
+            const toSave = {
+                query: state.query,
+                categories: [...state.categories],
+                sizes: [...state.sizes],
+                colors: [...state.colors],
+                tags: [...state.tags],
+                priceMin: state.priceMin,
+                priceMax: state.priceMax,
+                sort: state.sort,
+                perPage: state.perPage
+            };
+            localStorage.setItem('savedFilters', JSON.stringify(toSave));
+            alert('Filter disimpan secara lokal.');
+        });
+
+        // load saved filters on boot if exists
+        const saved = localStorage.getItem('savedFilters');
+        if (saved) {
+            // small subtle hint displayed - user can click to load
+            const hint = document.createElement('div');
+            hint.className = 'text-xs text-gray-500 dark:text-gray-400';
+            hint.innerHTML = `Anda punya filter tersimpan. <button id="load-filters" class="underline">Muat</button>`;
+            document.getElementById('filter-hint').appendChild(hint);
+            document.getElementById('load-filters').addEventListener('click', () => {
+                const obj = JSON.parse(saved);
+                $('#search').value = obj.query || '';
+                state.query = obj.query || '';
+                obj.categories && obj.categories.forEach(c => { state.categories.add(c); $(`#cat-${c.toLowerCase()}`) && ($(`#cat-${c.toLowerCase()}`).checked = true); });
+                obj.sizes && obj.sizes.forEach(s => { state.sizes.add(s); $$('#size-filters button').forEach(b=>{ if(b.dataset.size===s){ b.classList.add('bg-blue-600','text-white'); } }); });
+                obj.colors && obj.colors.forEach(c => { state.colors.add(c); $$('#color-filters button').forEach(b=>{ if(b.dataset.color===c){ b.classList.add('ring-2','ring-blue-500'); } }); });
+                obj.tags && obj.tags.forEach(t => { state.tags.add(t); $$('#tag-filters button').forEach(b=>{ if(b.dataset.tag===t){ b.classList.add('bg-blue-600','text-white'); } }); });
+                state.priceMin = obj.priceMin || null; state.priceMax = obj.priceMax || null;
+                $('#price-min').value = state.priceMin || ''; $('#price-max').value = state.priceMax || '';
+                state.sort = obj.sort || 'pop'; $('#sort').value = state.sort;
+                state.perPage = obj.perPage || 9; $('#per-page').value = String(state.perPage);
+                applyFilters();
+            });
+        }
+
+        // export CSV
+        document.getElementById('export-csv').addEventListener('click', () => {
+            exportCSV(state.products);
+        });
+    }
+
+    /***********************
+    Modal (quick view)
+    ***********************/
+    function openModal(id) {
+        const p = PRODUCTS.find(x => x.id === id);
+        const modal = document.getElementById('modal');
+        const body = document.getElementById('modal-body');
+        body.innerHTML = `
+            <div class="flex flex-col gap-3">
+                <img src="${p.img}" class="w-full h-64 object-cover rounded-md" alt="${escapeHtml(p.title)}" loading="lazy">
+                <div>
+                    <h4 class="font-bold text-lg text-gray-800 dark:text-gray-100">${escapeHtml(p.title)}</h4>
+                    <div class="text-sm text-gray-500 dark:text-gray-300">${escapeHtml(p.category)}</div>
+                    <div class="mt-2 text-blue-700 dark:text-blue-400 font-bold">Rp ${formatPrice(p.price)}</div>
+                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">Ukuran: ${p.sizes.join(', ')}</div>
+                    <div class="mt-2 text-sm">Warna: ${p.colors.map(c=>`<span class="inline-block mr-1 swatch" style="background-color:${colorToCss(c)}"></span>`).join('')}</div>
+                    <p class="mt-3 text-sm text-gray-700 dark:text-gray-300">${p.tags.join(' • ')}</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 md:flex-col md:items-stretch">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded">Tambahkan ke Keranjang</button>
+                <a href="#" class="text-sm text-gray-600 dark:text-gray-300 underline">Lihat detail</a>
+            </div>
+        `;
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+        // focus management
+        document.getElementById('modal-close').focus();
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('modal');
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+
+    /***********************
+    CSV Export
+    ***********************/
+    function exportCSV(items) {
+        if (!items.length) { alert('Tidak ada data untuk diekspor.'); return; }
+        const header = ['id','title','category','price','sizes','colors','tags','created_at'];
+        const rows = items.map(p => [p.id, `"${p.title.replace(/"/g,'""')}"`, p.category, p.price, `"${p.sizes.join('|')}"`, `"${p.colors.join('|')}"`, `"${p.tags.join('|')}"`, p.created_at]);
+        const csv = [header.join(','), ...rows.map(r=>r.join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `products_export_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    /***********************
+    Boot
+    ***********************/
+    (function initTheme(){
+        const html = document.documentElement;
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            document.getElementById('dark-toggle').textContent = '☀️';
+        } else {
+            html.classList.remove('dark');
+            document.getElementById('dark-toggle').textContent = '🌙';
+        }
+    })();
+
+    function boot() {
+        AOS.init({ once:true, duration:600, easing:'ease-out-cubic' });
+        initFacets();
+        bindEvents();
+        applyFilters(false); // initial render, no loading sim
+    }
+    document.addEventListener('DOMContentLoaded', boot);
+    </script>
+</body>
 </html>
