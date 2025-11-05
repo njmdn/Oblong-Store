@@ -6,17 +6,25 @@
         <title>Oblong Store</title>
         <!-- Aktifkan dark mode via class -->
         <script>
-            tailwind.config = {
-                darkMode: 'class'
+            tailwind = {
+                config: {
+                    darkMode: 'class'
+                }
             }
         </script>
         <!-- CDN Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- CDN AOS--Animate On Scroll--CSS -->
+        <!-- CDN AOS--Animate On Scroll CSS -->
         <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+        <!-- CDN Swiper CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/swiper@9/swiper-bundle.min.css">
         <style>
             html, body {
                 transition: background-color 0.5s, color 0.5s;
+            }
+            /* Make sure swiper slides adapt nicely */
+            .swiper-slide {
+                display: flex; justify-content: center; align-items: center;
             }
         </style>
     </head>
@@ -38,8 +46,8 @@
                 </button>
                 
                 <!-- Hamburger menu for mobile -->
-                <button class="md:hidden flex items-center px-3 py-2 border rounded text-blue-700 border-blue-700 ml-2" id="mobile-menu-btn">
-                    <svg class="fill-current h-4 w-4" viewBox="0 0 20 20">
+                <button class="md:hidden flex items-center px-3 py-2 border rounded text-blue-700 border-blue-700 ml-2" id="mobile-menu-btn" aria-label="Open menu">
+                    <svg class="fill-current h-4 w-4" viewBox="0 0 20 20" aria-hidden="true">
                         <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/>
                     </svg>
                 </button>
@@ -85,55 +93,87 @@
         <section class="container mx-auto px-4 py-8 md:py-12" data-aos="fade-right">
             <h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 text-center">Kategori Produk</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-                <a href="#" class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition">
+                <a href="#" class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition" data-aos="fade-down">
                     <img src="https://source.unsplash.com/80x80/?tshirt,clothes" alt="Kaos" class="mb-3 rounded-lg">
                     <span class="font-semibold text-gray-700 dark:text-gray-200 text-sm md:text-base">Kaos Polos</span>
                 </a>
-                <a href="#" class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition">
+                <a href="#" class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition" data-aos="fade-up">
                     <img src="https://source.unsplash.com/80x80/?hoodie,clothes" alt="Hoodie" class="mb-3 rounded-lg">
                     <span class="font-semibold text-gray-700 dark:text-gray-200 text-sm md:text-base">Hoodie</span>
                 </a>
-                <a href="#" class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition">
+                <a href="#" class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition" data-aos="fade-down">
                     <img src="https://source.unsplash.com/80x80/?polo,clothes" alt="Polo Shirt" class="mb-3 rounded-lg">
                     <span class="font-semibold text-gray-700 dark:text-gray-200 text-sm md:text-base">Polo Shirt</span>
                 </a>
-                <a href="#" class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition">
+                <a href="#" class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 md:p-6 flex flex-col items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition" data-aos="fade-up">
                     <img src="https://source.unsplash.com/80x80/?sweater,clothes" alt="Sweater" class="mb-3 rounded-lg">
                     <span class="font-semibold text-gray-700 dark:text-gray-200 text-sm md:text-base">Sweater</span>
                 </a>
             </div>
         </section>
 
-        <!-- Produk Unggulan Section -->
-        <section class="container mx-auto px-4 py-8 md:py-12" data-aos="fade-left">
+        <!-- Produk Unggulan Section - Swiper Carousel Produk -->
+        <section class="container mx-auto px-4 py-8 md:py-12" data-aos="fade-left" aria-label="Produk unggulan">
             <h3 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 text-center">Produk Unggulan</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-                
-                <!-- Produk 1 -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center" data-aos="zoom-in-up">
-                    <img src="https://source.unsplash.com/300x300/?tshirt,clothes" alt="Kaos Polos" class="mb-4 rounded-lg w-full max-w-[200px]">
-                    <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Kaos Polos</h4>
-                    <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Tersedia berbagai warna & ukuran. Cocok untuk usaha sablon, komunitas, dan event.</p>
-                    <span class="font-bold text-blue-700 dark:text-blue-400 mb-2">Mulai Rp20.000/pcs</span>
-                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Detail</a>
-                </div>
-                
-                <!-- Produk 2 -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center" data-aos="zoom-in-down">
-                    <img src="https://source.unsplash.com/300x300/?hoodie,clothes" alt="Hoodie" class="mb-4 rounded-lg w-full max-w-[200px]">
-                    <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Hoodie</h4>
-                    <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Nyaman dipakai dan stylish. Tersedia untuk pesanan partai besar.</p>
-                    <span class="font-bold text-blue-700 dark:text-blue-400 mb-2">Mulai Rp75.000/pcs</span>
-                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Detail</a>
-                </div>
-                
-                <!-- Produk 3 -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center" data-aos="zoom-in-up">
-                    <img src="https://source.unsplash.com/300x300/?polo,clothes" alt="Polo Shirt" class="mb-4 rounded-lg w-full max-w-[200px]">
-                    <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Polo Shirt</h4>
-                    <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Pilihan tepat untuk seragam kerja & promosi dengan harga grosir.</p>
-                    <span class="font-bold text-blue-700 dark:text-blue-400 mb-2">Mulai Rp40.000/pcs</span>
-                    <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Detail</a>
+            
+            <!-- Swiper -->
+            <div class="relative">
+                <div class="swiper my-swiper">
+                    <div class="swiper-wrapper">
+                        
+                        <!-- Slide 1 -->
+                        <div class="swiper-slide p-6">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                                <img src="https://source.unsplash.com/400x400/?tshirt,clothes" alt="Kaos Polos" class="mb-4 rounded-lg w-full max-w-[260px]">
+                                <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Kaos Polos</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Tersedia berbagai warna & ukuran. Cocok untuk usaha sablon, komunitas, dan event.</p>
+                                <span class="font-bold text-blue-700 dark:text-blue-400 mb-2">Mulai Rp20.000/pcs</span>
+                                <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm mt-3">Detail</a>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2 -->
+                        <div class="swiper-slide p-6">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                                <img src="https://source.unsplash.com/400x400/?hoodie,clothes" alt="Hoodie" class="mb-4 rounded-lg w-full max-w-[260px]">
+                                <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Hoodie</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Nyaman dipakai dan stylish. Tersedia untuk pesanan partai besar.</p>
+                                <span class="font-bold text-blue-700 dark:text-blue-400 mb-2">Mulai Rp75.000/pcs</span>
+                                <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm mt-3">Detail</a>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3 -->
+                        <div class="swiper-slide p-6">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                                <img src="https://source.unsplash.com/400x400/?polo,clothes" alt="Polo Shirt" class="mb-4 rounded-lg w-full max-w-[260px]">
+                                <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Polo Shirt</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Pilihan tepat untuk seragam kerja & promosi dengan harga grosir.</p>
+                                <span class="font-bold text-blue-700 dark:text-blue-400 mb-2">Mulai Rp40.000/pcs</span>
+                                <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm mt-3">Detail</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Slide 4 -->
+                        <div class="swiper-slide p-6">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex flex-col items-center">
+                                <img src="https://source.unsplash.com/400x400/?sweater,clothes" alt="Sweater" class="mb-4 rounded-lg w-full max-w-[260px]">
+                                <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Sweater</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4 text-center text-sm">Hangat, nyaman, dan cocok untuk pesanan komunitas.</p>
+                                <span class="font-bold text-blue-700 dark:text-blue-400 mb-2">Mulai Rp60.000/pcs</span>
+                                <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm mt-3">Detail</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination mt-6"></div>
+
+                    <!-- Add Navigation -->
+                    <div class="swiper-button-prev" aria-label="Previous slide"></div>
+                    <div class="swiper-button-next" aria-label="Next slide"></div>
+                    
                 </div>
             </div>
         </section>
@@ -208,8 +248,10 @@
             </div>
         </footer>
 
-        <!-- CDN AOS--Animate On Scroll--JS -->
+        <!-- CDN AOS--Animate On Scroll JS -->
         <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+        <!-- CDN Swiper JS -->
+        <script src="https://unpkg.com/swiper@9/swiper-bundle.min.js"></script>
         <!-- AOS & Dark Mode Script -->
         <script>
             // Init AOS
@@ -217,6 +259,40 @@
                 once: true,
                 duration: 700
             });
+
+            //Init Swiper
+            const swiper = new Swiper('.my-swiper', {
+                loop: true,
+                slidesPerView: 1,
+                spaceBetween: 20,
+                centeredSlides: false,
+                autoplay: {
+                    delay: 4500,
+                    disableOnInteraction: true,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 1,
+                        spaceBetween: 16,
+                    },
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 24,
+                    }
+                }
+            })
             
             // Dark mode toggle
             const html = document.documentElement;
